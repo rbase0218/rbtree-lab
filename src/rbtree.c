@@ -13,46 +13,50 @@ rbtree *new_rbtree(void) {
   p->nil->color = RBTREE_BLACK;
   p->nil->parent = p->nil->left = p->nil->right = p->nil;
 
-  // Root는 곧 NILL
+  // Root는 곧 NIL
   p->root = p->nil;
   return p;
 }
 
 // Delete
 // Tree 안의 모든 노드를 삭제하기.
-void delete_rbtree(rbtree *t) {
-  // node_t* searcher = t->root;
-  // node_t* parent;
+void delete_rbtree(rbtree *t) 
+{
+  if (t == NULL || t->root == NULL) return;
 
-  // // Left로 가장 깊게 내려간다.
-  // while(searcher->left != t->nil || t->root != NULL)
-  // {
-  //   // LEFT의 최하단까지 내려간다.
-  //   if(searcher->left != t->nil)
-  //     searcher = searcher->left;
-  //   else
-  //   {
-  //     // 부모 저장
-  //     parent = searcher->parent;
-  //     // 메모리 할당 해제
-  //     free(searcher);
-  //     searcher = NULL;
+  node_t* searcher = t->root;
+  node_t* parent;
+  while (searcher != t->nil)
+  {
+    if (searcher->left != t->nil) searcher = searcher->left;
+    else
+    {
+      parent = searcher->parent;
 
-  //     // 만약 부모 노드의 Right가 존재하면 재순회
-  //     if(parent->right != t->nil)
-  //       searcher = parent->right;
-  //     else if(parent->right == t->nil) // 할당 해제된 상태 : NULL
-  //     {
-  //       searcher = parent->right;
-  //       free(searcher);
-  //       searcher = parent;
-  //     }
-  //   }
-  // }
+      if (searcher->right != t->nil)
+      {
+        node_t* right = searcher->right;
+        searcher->right = t->nil;
+        searcher = right;
+      }
+      else
+      {
+        if (parent != NULL)
+        {
+          if (parent->left == searcher)      parent->left = t->nil;
+          else                               parent->right = t->nil;
+        }
+        
+        free(searcher);
+        searcher = parent;
+      }
+    }
+  }
 
-  // 다 끝나면 Tree 인스턴스도 해제
+  if (t->nil != NULL)
+    free(t->nil);
+
   free(t);
-  t = NULL;
 }
 
 // Rotate -> 2024.10.13
@@ -347,8 +351,8 @@ int rbtree_erase(rbtree *t, node_t *p)
       y->right = p->right;
       y->right->parent = y;
     }
-    // else
-    //   temp->parent = y;
+    else
+      temp->parent = y;
 
     rb_transplant(t, p, y);
     y->left = p->left;
