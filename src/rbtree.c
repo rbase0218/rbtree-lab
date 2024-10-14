@@ -15,11 +15,11 @@ rbtree *new_rbtree(void) {
 
   // Root는 곧 NILL
   p->root = p->nil;
-  
   return p;
 }
 
-// RB 트리를 할당 해제할 것.
+// Delete
+// Tree 안의 모든 노드를 삭제하기.
 void delete_rbtree(rbtree *t) {
   // TODO: reclaim the tree nodes's memory
   free(t);
@@ -122,7 +122,6 @@ void rb_insert_fixup(rbtree *t, node_t *z)
   }
   t->root->color = RBTREE_BLACK;
 }
-
 node_t *rbtree_insert(rbtree *t, const key_t key)
 {
   node_t *searcher = t->root;
@@ -167,7 +166,7 @@ node_t *rbtree_find(const rbtree *t, const key_t key)
   if(t == NULL) return NULL;
   node_t* searcher = t->root;
   while(searcher != t->nil && searcher->key != key)
-    searcher = (searcher->key < key) ? searcher->left : searcher->right;
+    searcher = (searcher->key < key) ? searcher->right : searcher->left;
   
   return (searcher == t->nil) ? NULL : searcher;
 }
@@ -213,6 +212,7 @@ void rb_transplant(rbtree *t, node_t *u, node_t *v)
   v->parent = u->parent;
 }
 
+// Erase -> 2024.10.14
 void rb_erase_fixup(rbtree *t, node_t *x)
 {
   while(x!=t->root && x->color == RBTREE_BLACK){
@@ -277,8 +277,6 @@ void rb_erase_fixup(rbtree *t, node_t *x)
 
   x->color = RBTREE_BLACK;
 }
-
-// Erase -> 2024.10.14
 int rbtree_erase(rbtree *t, node_t *p)
 {
   node_t* y = p;
@@ -324,9 +322,23 @@ int rbtree_erase(rbtree *t, node_t *p)
   return 0;
 }
 
-// RB트리를 배열로 만들.....어? 뭔데 이거
+// TreeToArray -> 2024.10.14
+key_t *inorder(const rbtree *t, node_t *p, key_t *arr)
+{
+  if (p == t->nil)
+    return arr;
+
+  arr = inorder(t, p->left, arr);
+  
+  *arr = p->key;
+  arr += 1;
+
+  arr = inorder(t, p->right, arr);
+
+  return arr;
+}
 int rbtree_to_array(const rbtree *t, key_t *arr, const size_t n)
 {
-  // TODO: implement to_array
+  inorder(t, t->root, arr);
   return 0;
 }
