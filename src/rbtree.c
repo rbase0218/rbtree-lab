@@ -157,9 +157,15 @@ node_t *rbtree_insert(rbtree *t, const key_t key)
   return t->root;
 }
 
-// Find
+// Find -> 2024.10.14
 node_t *rbtree_find(const rbtree *t, const key_t key)
 {
+  if(t == NULL) return;
+  node_t* searcher = t->root;
+  while(searcher != t->nil && searcher->key != key)
+    searcher = (searcher->key < key) ? searcher->left : searcher->right;
+  
+  return (searcher == t->nil) ? NULL : searcher;
 }
 
 // RB트리에서 가장 작은 수
