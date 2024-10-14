@@ -160,7 +160,7 @@ node_t *rbtree_insert(rbtree *t, const key_t key)
 // Find -> 2024.10.14
 node_t *rbtree_find(const rbtree *t, const key_t key)
 {
-  if(t == NULL) return;
+  if(t == NULL) return NULL;
   node_t* searcher = t->root;
   while(searcher != t->nil && searcher->key != key)
     searcher = (searcher->key < key) ? searcher->left : searcher->right;
@@ -168,14 +168,26 @@ node_t *rbtree_find(const rbtree *t, const key_t key)
   return (searcher == t->nil) ? NULL : searcher;
 }
 
-// RB트리에서 가장 작은 수
+// Min Num -> 2024.10.14
 node_t *rbtree_min(const rbtree *t)
 {
+  if(t == NULL) return NULL;
+  node_t* searcher = t->root;
+  while(searcher->left != t->nil)
+      searcher = searcher->left;
+  
+  return searcher;
 }
 
-// RB트리에서 가장 큰 수
+// Max Num -> 2024.10.14
 node_t *rbtree_max(const rbtree *t)
 {
+  if(t == NULL) return;
+  node_t* searcher = t->root;
+  while(searcher->right != t->nil)
+    searcher = searcher->right;
+
+  return searcher;
 }
 
 node_t *rbtree_find_successor(const rbtree *t, node_t *target)
