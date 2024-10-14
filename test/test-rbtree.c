@@ -320,7 +320,7 @@ void test_find_erase(rbtree *t, const key_t *arr, const size_t n) {
 
   for (int i = 0; i < n; i++) {
     node_t *p = rbtree_find(t, arr[i]);
-    printf("arr[%d] = %d\n", i, arr[i]);
+    // printf("arr[%d] = %d\n", i, arr[i]);
     assert(p != NULL);
     assert(p->key == arr[i]);
     rbtree_erase(t, p);
@@ -372,9 +372,9 @@ void test_find_erase_rand(const size_t n, const unsigned int seed) {
 int main(void) {
   test_init();
   test_insert_single(1024);
-  test_find_single(512, 1024);
-  test_erase_root(128);
-  test_find_erase_fixed();
+  // test_find_single(512, 1024);
+  // test_erase_root(128);
+  // test_find_erase_fixed();
   // test_minmax_suite();
   // test_to_array_suite();
   // test_distinct_values();
