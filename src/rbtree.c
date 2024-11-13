@@ -289,6 +289,7 @@ void rb_erase_fixup(rbtree *t, node_t *x)
     {
       node_t *w = x->parent->left;
 
+      // Case 1 : 형제 Red
       if (w->color == RBTREE_RED)
       {
         w->color = RBTREE_BLACK;
@@ -297,20 +298,24 @@ void rb_erase_fixup(rbtree *t, node_t *x)
         w = x->parent->left;
       }
 
+      // Case 2 : 형제 Black, 조카 둘 다 Black
       if (w->left->color == RBTREE_BLACK && w->right->color == RBTREE_BLACK)
       {
         w->color = RBTREE_RED;
-        x = x->parent;
+        x = x->parent;  // Doubly Black
       }
       else
       {
+        // Case 3 : 형제 Black, Left 조카 Black
         if (w->left->color == RBTREE_BLACK)
         {
-          w->right->color = RBTREE_BLACK;
+          w->right->color = RBTREE_BLACK ;
           w->color = RBTREE_RED;
           left_rotate(t, w);
           w = x->parent->left;
         }
+
+        // Case 4 : 형제 Black, Right 조카 Black
         w->color = x->parent->color;
         x->parent->color = RBTREE_BLACK;
         w->left->color = RBTREE_BLACK;
